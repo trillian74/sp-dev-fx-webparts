@@ -5,22 +5,16 @@ import { IEventRecurrenceInfoProps } from './IEventRecurrenceInfoProps';
 import { IEventRecurrenceInfoState } from './IEventRecurrenceInfoState';
 import { escape } from '@microsoft/sp-lodash-subset';
 import * as moment from 'moment';
-import { parseString, Builder } from "xml2js";
 import {
   ChoiceGroup,
   IChoiceGroupOption,
 
 } from 'office-ui-fabric-react';
 
-
 import { EventRecurrenceInfoDaily } from './../EventRecurrenceInfoDaily/EventRecurrenceInfoDaily';
 import { EventRecurrenceInfoWeekly } from './../EventRecurrenceInfoWeekly/EventRecurrenceInfoWeekly';
 import { EventRecurrenceInfoMonthly } from './../EventRecurrenceInfoMonthly/EventRecurrenceInfoMonthly';
 import { EventRecurrenceInfoYearly } from './../EventRecurrenceInfoYearly/EventRecurrenceInfoYearly';
-
-
-
-
 export class EventRecurrenceInfo extends React.Component<IEventRecurrenceInfoProps, IEventRecurrenceInfoState> {
 
   public constructor(props) {
@@ -90,29 +84,29 @@ export class EventRecurrenceInfo extends React.Component<IEventRecurrenceInfoPro
 
         <div style={{ display: 'inline-block', verticalAlign: 'top' }}>
           <ChoiceGroup
-            label="Recurrence Information"
+            label={ strings.recurrenceInformationLabel }
             selectedKey={this.state.selectedRecurrenceRule}
             options={[
               {
                 key: 'daily',
                 iconProps: { iconName: 'CalendarDay' },
-                text: 'Daily'
+                text: strings.dailyLabel
               },
               {
                 key: 'weekly',
                 iconProps: { iconName: 'CalendarWeek' },
-                text: 'Weekly'
+                text: strings.weeklyLabel
               },
               {
                 key: 'monthly',
                 iconProps: { iconName: 'Calendar' },
-                text: 'Monthly',
+                text: strings.monthlyLabel,
 
               },
               {
                 key: 'yearly',
                 iconProps: { iconName: 'Calendar' },
-                text: 'Yearly',
+                text: strings.yearlyLabel,
               }
             ]}
             onChange={this._onRecurrenceFrequenceChange}
