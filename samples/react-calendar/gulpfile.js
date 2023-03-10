@@ -13,12 +13,19 @@ const gulpSequence = require('gulp-sequence');
 
 build.addSuppression(`Warning - [sass] The local CSS class 'ms-Grid' is not camelCase and will not be type-safe.`);
 
+var getTasks = build.rig.getTasks;
+build.rig.getTasks = function () {
+  var result = getTasks.call(build.rig);
+
+  result.set('serve', result.get('serve-deprecated'));
+
+  return result;
+};
+
 // Create clean distrubution package
 gulp.task('dist', gulpSequence('clean', 'bundle', 'package-solution'));
 // Create clean development package
 gulp.task('dev', gulpSequence('clean', 'bundle', 'package-solution'));
-
-
 
 /**
  * Webpack Bundle Anlayzer
@@ -55,8 +62,6 @@ const stylelint = require('gulp-stylelint');
 /* Stylelinter sub task */
 let styleLintSubTask = build.subTask('stylelint', (gulp) => {
 
-    console.log('[stylelint]: By default style lint errors will not break your build. If you want to change this behaviour, modify failAfterError parameter in gulpfile.js.');
-
     return gulp
         .src('src/**/*.scss')
         .pipe(stylelint({
@@ -77,6 +82,7 @@ build.rig.addPreBuildTask(styleLintSubTask);
 
 
 build.initialize(gulp);
+build.sass.setConfig({ warnOnNonCSSModules: false, useCssModules:true});
 
 /**
  * Continuous Integration

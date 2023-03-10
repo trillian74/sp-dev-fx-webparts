@@ -1,30 +1,42 @@
-# SPFx webpart with Taxonomy picker Office UI Fabric Panel.
+# SPFx web part with Taxonomy picker Office UI Fabric Panel.
 
 ## Summary
-Sample webpart with Single and Multi-select taxonomy pickers using Office UI Fabric panel. The webpart uses the Taxonomy API support available in the @pnp/taxonomy.
+Sample web part with Single and Multi-select taxonomy pickers using Office UI Fabric panel. The web part uses the Taxonomy API support available in the @pnp/taxonomy.
 
 
-![TaxonomyPickerPanel webpart](https://github.com/vipulkelkar/sp-dev-fx-webparts/blob/TaxonomyPanelPicker/samples/react-taxonomypicker-panel/assets/TaxonomyPicker.gif)
+![TaxonomyPickerPanel web part](https://github.com/vipulkelkar/sp-dev-fx-webparts/blob/TaxonomyPanelPicker/samples/react-taxonomypicker-panel/assets/TaxonomyPicker.gif)
 
 
-## Used SharePoint Framework Version 
-![drop](https://img.shields.io/badge/drop-1.5.1-green.svg)
+## Compatibility
+
+| :warning: Important          |
+|:---------------------------|
+| Every SPFx version is only compatible with specific version(s) of Node.js. In order to be able to build this sample, please ensure that the version of Node on your workstation matches one of the versions listed in this section. This sample will not work on a different version of Node.|
+|Refer to <https://aka.ms/spfx-matrix> for more information on SPFx compatibility.   |
+
+![SPFx 1.5.1](https://img.shields.io/badge/SPFx-1.5.1-green.svg)
+![Node.js v8 | v6](https://img.shields.io/badge/Node.js-LTS%208%20%7C%20v6-green.svg)
+![Compatible with SharePoint Online](https://img.shields.io/badge/SharePoint%20Online-Compatible-green.svg)
+![Does not work with SharePoint 2019](https://img.shields.io/badge/SharePoint%20Server%202019-Incompatible-red.svg "SharePoint Server 2019 requires SPFx 1.4.1 or lower")
+![Does not work with SharePoint 2016 (Feature Pack 2)](https://img.shields.io/badge/SharePoint%20Server%202016%20(Feature%20Pack%202)-Incompatible-red.svg "SharePoint Server 2016 Feature Pack 2 requires SPFx 1.1")
+![Local Workbench Compatible](https://img.shields.io/badge/Local%20Workbench-Compatible-green.svg)
+![Hosted Workbench Compatible](https://img.shields.io/badge/Hosted%20Workbench-Compatible-green.svg)
+![Compatible with Remote Containers](https://img.shields.io/badge/Remote%20Containers-Compatible-green.svg)
+
 
 ## Applies to
 
-* [SharePoint Framework](https:/dev.office.com/sharepoint)
-* [Office 365 tenant](https://dev.office.com/sharepoint/docs/spfx/set-up-your-development-environment)
+* [SharePoint Framework](https://learn.microsoft.com/sharepoint/dev/spfx/sharepoint-framework-overview)
+* [Microsoft 365 tenant](https://learn.microsoft.com/sharepoint/dev/spfx/set-up-your-development-environment)
 
 ## Prerequisites
  
 - @pnp/sp
 - Office UI Fabric React
 
-## Solution
+## Contributors
 
-Solution|Author(s)
---------|---------
-react-taxonomypicker-panel | Vipul Kelkar  @vipulkelkar
+* Vipul Kelkar  @vipulkelkar
 
 ## Version history
 
@@ -33,14 +45,12 @@ Version|Date|Comments
 1.0|June 22, 2018|Initial release
 1.1|August 20, 2018|Bug fix and version upgrade
 
-## Disclaimer
-**THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
 
----
 
 ## Minimal Path to Awesome
 
 - Clone this repository
+
 
 - Navigate to the file 'src/webparts/components/TermsPickerComponent.tsx'
 
@@ -48,7 +58,7 @@ Version|Date|Comments
 
 - Navigate to the file 'src/webparts/components/ReactTaxonomyPickerpanel.tsx'
 
-- In the RENDER method of the webpart, a custom taxonomy picker component is used. Please replace the "TermSetId" property with the desired term set id in your tenant.
+- In the RENDER method of the web part, a custom taxonomy picker component is used. Please replace the "TermSetId" property with the desired term set id in your tenant.
 
 - in the command line run:
   - `npm install`
@@ -56,12 +66,13 @@ Version|Date|Comments
 
 - Navigate to - <Your SP site>/_layouts/workbench.aspx and add the "react-taxonomypicker-panel"
 
+>  This sample can also be opened with [VS Code Remote Development](https://code.visualstudio.com/docs/remote/remote-overview). Visit https://aka.ms/spfx-devcontainer for further instructions.
 
 ## Features
 
-- This webpart demonstrates the use of a custom taxonomy picker control built with Office UI Fabric React Panel and Tagpicker that enables users to select terms for a single-select or multi-select taxonomy field in a controlled manner.
+- This web part demonstrates the use of a custom taxonomy picker control built with Office UI Fabric React Panel and Tagpicker that enables users to select terms for a single-select or multi-select taxonomy field in a controlled manner.
 
-- The custom taxonomy picker control is a reusable React component and can be easily placed in a SPFx webpart just by providing the TermSetId as a property to the component.
+- The custom taxonomy picker control is a reusable React component and can be easily placed in a SPFx web part just by providing the TermSetId as a property to the component.
 
   <TermsPickerComponent IsMultiValue={false} TermSetId='<TERM-SET-ID>' LabelText='Single-select field' SelectedTerms={<State variable>}/>
 
@@ -74,4 +85,10 @@ Version|Date|Comments
     key : "<Term ID>"
   }
 
-<img src="https://telemetry.sharepointpnp.com/sp-dev-fx-webparts/samples/react-taxonomypicker-panel" />
+
+## Disclaimer
+
+**THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
+
+
+<img src="https://pnptelemetry.azurewebsites.net/sp-dev-fx-webparts/samples/react-taxonomypicker-panel" />

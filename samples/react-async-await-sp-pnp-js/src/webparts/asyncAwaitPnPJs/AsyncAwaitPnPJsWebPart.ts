@@ -1,37 +1,39 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
+import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import {
-  BaseClientSideWebPart,
   IPropertyPaneConfiguration,
   PropertyPaneTextField
-} from '@microsoft/sp-webpart-base';
+} from '@microsoft/sp-property-pane';
+
 
 import * as strings from 'asyncAwaitPnPJsStrings';
 import AsyncAwaitPnPJs from './components/AsyncAwaitPnPJs';
-import { IAsyncAwaitPnPJsProps } from './components/IAsyncAwaitPnPJsProps';
-import { IAsyncAwaitPnPJsWebPartProps } from './IAsyncAwaitPnPJsWebPartProps';
+import { IAsyncAwaitPnPJsProps } from './components/AsyncAwaitPnPJs';
 
-// import pnp from "sp-pnp-js";
+import { spfi, SPFI, SPFx } from "@pnp/sp";
+
+export interface IAsyncAwaitPnPJsWebPartProps {
+  description: string;
+}
 
 export default class AsyncAwaitPnPJsWebPart extends BaseClientSideWebPart<IAsyncAwaitPnPJsWebPartProps> {
+  private sp: SPFI;
 
   // // https://github.com/SharePoint/PnP-JS-Core/wiki/Using-sp-pnp-js-in-SharePoint-Framework
-  // public onInit(): Promise<void> {
-  //   return super.onInit().then(_ => {
-  //     // establish SPFx context
-  //     pnp.setup({
-  //       spfxContext: this.context
-  //     });
-  //   });
-  // }
+  public async onInit(): Promise<void> {
+    await super.onInit();
+
+    this.sp = spfi().using(SPFx(this.context));
+  }
 
   public render(): void {
-    const element: React.ReactElement<IAsyncAwaitPnPJsProps > = React.createElement(
+    const element: React.ReactElement<IAsyncAwaitPnPJsProps> = React.createElement(
       AsyncAwaitPnPJs,
       {
         description: this.properties.description,
-        pageContext: this.context.pageContext
+        sp: this.sp
       }
     );
 

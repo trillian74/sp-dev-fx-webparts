@@ -1,95 +1,113 @@
 import { INavLink } from 'office-ui-fabric-react/lib/Nav';
 import { WebPartContext } from '@microsoft/sp-webpart-base';
 import { SPHttpClient } from '@microsoft/sp-http';
+import { navLinkBuilder } from './NavLinkBuilder';
 
 export class SPService {
+  /* Array to store all unique anchor URLs */
+  private static allUrls: string[] = [];
+
+  /**
+   * Returns the unique Anchor URL for a heading
+   * @param headingValue The text value of the heading
+   * @returns anchorUrl
+   */
+  private static GetAnchorUrl(headingValue: string): string {
+    let anchorUrl = `#${headingValue
+      .toLowerCase()
+      .replace(/[{}|\[\]\<\>#@"'^%`?;:\/=~\\\s\s+]/g, " ")
+      .replace(/^(-|\s)*|(-|\s)*$/g, "")
+      .replace(/\'|\?|\\|\/| |\&/g, "-")
+      .replace(/-+/g, "-")
+      .substring(0, 128)}`;
+
+    let counter = 1;
+    this.allUrls.forEach(url => {
+      if (url === anchorUrl) {
+        if (counter != 1) {
+          anchorUrl = anchorUrl.slice(0, -((counter - 1).toString().length + 1)) + '-' + counter;
+
+        } else {
+          anchorUrl += '-1';
+        }
+
+        counter++;
+      }
+    });
+
+    return anchorUrl;
+  }
+
+  /**
+   * Returns the Anchor Links for Nav element
+   * @param context Web part context
+   * @returns anchorLinks
+   */
   public static async GetAnchorLinks(context: WebPartContext) {
     let anchorLinks: INavLink[] = [];
 
     try {
       /* Page ID on which the web part is added */
-      let pageId = context.pageContext.listItem.id;
+      const pageId = context.pageContext.listItem.id;
 
       /* Get the canvasContent1 data for the page which consists of all the HTML */
-      let data = await context.spHttpClient.get(`${context.pageContext.web.absoluteUrl}/_api/sitepages/pages(${pageId})`, SPHttpClient.configurations.v1);
-      let jsonData = await data.json();
-      let canvasContent1 = jsonData.CanvasContent1;
-      let canvasContent1JSON: any[] = JSON.parse(canvasContent1);
+      const data = await context.spHttpClient.get(`${context.pageContext.web.absoluteUrl}/_api/sitepages/pages(${pageId})`, SPHttpClient.configurations.v1);
+      const jsonData = await data.json();
+      const canvasContent1 = jsonData.CanvasContent1;
+      const canvasContent1JSON: any[] = JSON.parse(canvasContent1);
 
-      /* Initialize variables to be used for sorting and adding the Navigation links */
-      let headingIndex = 0;
-      let subHeadingIndex = -1;
-      let headingOrder = 0;
-      let prevHeadingOrder = 0;
-
-      /* Array to store all unique anchor URLs */
-      let allUrls: string[] = [];
+      this.allUrls = [];
 
       /* Traverse through all the Text web parts in the page */
       canvasContent1JSON.map((webPart) => {
-        if (webPart.innerHTML) {
-          let HTMLString: string = webPart.innerHTML;
+        if (webPart.zoneGroupMetadata && webPart.zoneGroupMetadata.type === 1) {
+          const headingIsEmpty: boolean = !webPart.zoneGroupMetadata.displayName;
+          const headingValue: string = headingIsEmpty ? 'Empty Heading' : webPart.zoneGroupMetadata.displayName ;
+          const anchorUrl: string = this.GetAnchorUrl(headingValue);
+          this.allUrls.push(anchorUrl);
 
-          while (HTMLString.search(/<h[1-4]>/g) !== -1) {
-            /* The Header Text value */
-            let headingValue = HTMLString.substring(HTMLString.search(/<h[1-4]>/g) + 4, HTMLString.search(/<\/h[1-4]>/g));
-            console.log(headingValue);
-            headingOrder = parseInt(HTMLString.charAt(HTMLString.search(/<h[1-4]>/g) + 2));
-
-            /* Check if same anchorUrl already exists */
-            let urlExists = true;
-            let anchorUrl = `#${headingValue.replace(/ /g, '-')}`.toLowerCase();
-            let urlSuffix = 1;
-            while (urlExists === true) {
-              urlExists = (allUrls.indexOf(anchorUrl) === -1) ? false : true;
-              if (urlExists) {
-                anchorUrl = anchorUrl + `-${urlSuffix}`;
-                urlSuffix++;
-              }
-            }
-            allUrls.push(anchorUrl);
-
-            /* Add links to Nav element */
-            if (anchorLinks.length === 0) {
-              anchorLinks.push({ name: headingValue, key: anchorUrl, url: anchorUrl, links: [], isExpanded: true });
-            } else {
-              if (headingOrder <= prevHeadingOrder) {
-                /* Adding or Promoting links */
-                if (headingOrder === 2) {
-                  anchorLinks.push({ name: headingValue, key: anchorUrl, url: anchorUrl, links: [], isExpanded: true });
-                  headingIndex++;
-                  subHeadingIndex = -1;
-                } else {
-                  if (headingOrder === 4) {
-                    anchorLinks[headingIndex].links[subHeadingIndex].links.push({ name: headingValue, key: anchorUrl, url: anchorUrl, links: [], isExpanded: true });
-                  } else if (headingOrder === 3){
-                    anchorLinks[headingIndex].links.push({ name: headingValue, key: anchorUrl, url: anchorUrl, links: [], isExpanded: true });
-                    subHeadingIndex++;
-                  }
-                }
-              } else {
-                /* Making sub links */
-                if (headingOrder === 3) {
-                  anchorLinks[headingIndex].links.push({ name: headingValue, key: anchorUrl, url: anchorUrl, links: [], isExpanded: true });
-                  subHeadingIndex++;
-                } else {
-                  anchorLinks[headingIndex].links[subHeadingIndex].links.push({ name: headingValue, key: anchorUrl, url: anchorUrl, links: [], isExpanded: true });
-                }
-              }
-            }
-            prevHeadingOrder = headingOrder;
-
-            /* Replace the added header links from the string so they don't get processed again */
-            HTMLString = HTMLString.replace(`<h${headingOrder}>`, '');
-            HTMLString = HTMLString.replace(`</h${headingOrder}>`, '');
+          // Limitation! This will break with headings containing the same name
+          if (anchorLinks.filter(x => x.name === headingValue).length === 0) {
+            // Add link to nav element
+            anchorLinks.push({ name: headingValue, key: anchorUrl, url: !headingIsEmpty && anchorUrl, links: [], isExpanded: webPart.zoneGroupMetadata.isExpanded });
           }
+        }
+
+        if (webPart.innerHTML) {
+          const HTMLString: string = webPart.innerHTML;
+          const hasCollapsableHeader: boolean = webPart.zoneGroupMetadata && 
+            webPart.zoneGroupMetadata.type === 1 && 
+            ( anchorLinks.filter(x => x.name === webPart.zoneGroupMetadata.displayName).length === 1 || 
+            !webPart.zoneGroupMetadata.displayName );
+
+          const htmlObject: HTMLDivElement = document.createElement('div');
+          htmlObject.innerHTML = HTMLString;
+
+          const headers: NodeListOf<Element> = htmlObject.querySelectorAll('h1, h2, h3, h4');
+
+          headers.forEach(header => {
+            const headingValue: string = header.textContent;
+            let headingOrder: number = parseInt(header.tagName.substring(1));
+            // -2 because the text webpart heading 1 uses a h2 element
+            headingOrder -= 2;
+
+            if (hasCollapsableHeader) {
+              headingOrder++;
+            }
+
+            const anchorUrl: string = this.GetAnchorUrl(headingValue);
+            this.allUrls.push(anchorUrl);
+
+            // Add link to nav element
+            const newNavLink: INavLink = { name: headingValue, key: anchorUrl, url: anchorUrl, links: [], isExpanded: true };
+            navLinkBuilder.build<INavLink>(anchorLinks, newNavLink, headingOrder);
+          });
         }
       });
     } catch (error) {
       console.log(error);
     }
 
-    console.log(anchorLinks);
     return anchorLinks;
   }
 }

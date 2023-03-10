@@ -1,20 +1,50 @@
+---
+page_type: sample
+products:
+- office-sp
+languages:
+- javascript
+- typescript
+extensions:
+  contentType: tools
+  technologies:
+  - SharePoint Framework
+  platforms:
+  - React
+  createdDate: 1/1/2016 12:00:00 AM
+---
+# Basic TODO
+
 ## Summary
 A simple todo web part built using react to showcase some of the SharePoint Framework developer features, utilities and best practices in building react based web parts.
 
 ![Todo basic web part demo in SharePoint Workbench](./assets/todo-basic-demo.gif)
 
-## Used SharePoint Framework Version 
-![drop](https://img.shields.io/badge/drop-GA-green.svg)
+
+## Compatibility
+
+| :warning: Important          |
+|:---------------------------|
+| Every SPFx version is only compatible with specific version(s) of Node.js. In order to be able to build this sample, please ensure that the version of Node on your workstation matches one of the versions listed in this section. This sample will not work on a different version of Node.|
+|Refer to <https://aka.ms/spfx-matrix> for more information on SPFx compatibility.   |
+
+![SPFx 1.1.0](https://img.shields.io/badge/SPFx-1.1.0-green.svg)
+![Node.js v6](https://img.shields.io/badge/Node.js-v6-green.svg) 
+![Compatible with SharePoint Online](https://img.shields.io/badge/SharePoint%20Online-Compatible-green.svg)
+![Compatible SharePoint 2019](https://img.shields.io/badge/SharePoint%20Server%202019-Compatible-green.svg)
+![Compatible with SharePoint 2016 (Feature Pack 2)](https://img.shields.io/badge/SharePoint%20Server%202016%20(Feature%20Pack%202)-Compatible-green.svg)
+![Local Workbench Compatible](https://img.shields.io/badge/Local%20Workbench-Compatible-green.svg)
+![Hosted Workbench Compatible](https://img.shields.io/badge/Hosted%20Workbench-Compatible-green.svg)
+![Compatible with Remote Containers](https://img.shields.io/badge/Remote%20Containers-Compatible-green.svg)
+
 
 ## Applies to
 
-* [SharePoint Framework Developer Documentation](http://dev.office.com/sharepoint/docs/spfx/sharepoint-framework-overview)
+* [SharePoint Framework Developer Documentation](https://learn.microsoft.com/sharepoint/dev/spfx/sharepoint-framework-overview)
 
-## Solution
+## Contributors
 
-Solution|Author(s)
---------|---------
-react-todo-basic | Chakkaradeep Chandran (@chakkaradeep)
+* [Chakkaradeep Chandran](https://github.com/chakkaradeep) (@chakkaradeep)
 
 ## Version history
 
@@ -24,11 +54,6 @@ Version|Date|Comments
 1.0.1|February 1st, 2017|Updated to SPFx drop RC0
 1.0.0|October 12th, 2016|Initial release
 
-## Disclaimer
-**THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
-
----
-
 ## Minimal Path to Awesome
 
 - Clone this repository
@@ -36,6 +61,8 @@ Version|Date|Comments
 - in the command line run:
   - `npm install`
   - `gulp serve`
+
+>  This sample can also be opened with [VS Code Remote Development](https://code.visualstudio.com/docs/remote/remote-overview). Visit https://aka.ms/spfx-devcontainer for further instructions.
 
 ## Features
 This todo basic sample web part showcases some of the SharePoint Framework developer features which will help you build web parts with great user experiences along with good coding pattern and practices for react based web parts. Below are some resources if you are not familiar with react:
@@ -78,7 +105,7 @@ this.context.statusRenderer.displayLoadingIndicator(this.domElement, "Todo");
 ```
 The code above displays the default loading indicator for web parts. The `this.domElement` specifically instructs the loading indicator to be displayed in the web part's DOM element. 
 
-To clear the loading indicator when your operation is complete, you just call [`clearLoadingIndicator`](https://dev.office.com/sharepoint/reference/spfx/sp-webpart-base/iclientsidewebpartstatusrenderer):
+To clear the loading indicator when your operation is complete, you just call [`clearLoadingIndicator`](https://docs.microsoft.com/javascript/api/sp-webpart-base/iclientsidewebpartstatusrenderer):
 
 ```ts
 this.context.statusRenderer.clearLoadingIndicator(this.domElement);
@@ -253,7 +280,7 @@ This sample uses two data providers:
 - [MockDataProvider](./src/webparts/todo/tests/MockDataProvider.ts) - a light weight provider that mocks SharePoint API calls and returns mock data.
 - [SharePointDataProvider](./src/webparts/todo/dataProviders/SharePointDataProvider.ts) - the provider which talks to SharePoint and returns SharePoint data.
 
-Depending on where you are web part is running, local environment or SharePoint environment, you use the respective data provider. You can see this in action in the [TodoWebPart.ts](./src/webparts/todo/TodoWebPart.ts) web part constructor. The [`Environment`](https://dev.office.com/sharepoint/reference/spfx/sp-core-library/environment) class and [`EnvironmentType`](https://dev.office.com/sharepoint/reference/spfx/sp-core-library/environmenttype) enum in the [`@microsoft/sp-core-library`](https://dev.office.com/sharepoint/reference/spfx/sp-core-library-module) module helps you determine where the web part is running. We use that to create the corresponding data provider instance in the `onInit` method:
+Depending on where you are web part is running, local environment or SharePoint environment, you use the respective data provider. You can see this in action in the [TodoWebPart.ts](./src/webparts/todo/TodoWebPart.ts) web part constructor. The [`Environment`](https://docs.microsoft.com/javascript/api/sp-core-library/environment) class and [`EnvironmentType`](https://docs.microsoft.com/javascript/api/sp-core-library/environmenttype) enum in the [`@microsoft/sp-core-library`](https://docs.microsoft.com/javascript/api/sp-core-library) module helps you determine where the web part is running. We use that to create the corresponding data provider instance in the `onInit` method:
 
 ```ts
  protected onInit(): Promise<void> {
@@ -277,7 +304,7 @@ Depending on where you are web part is running, local environment or SharePoint 
 ```
 ### Using SPHttpClient to fetch SharePoint data
 
-SharePoint Framework includes a [`SPHttpClient`](https://dev.office.com/sharepoint/reference/spfx/sp-http/sphttpclient) utility class that you can use to interact with SharePoint data using SharePoint REST APIs. It adds default headers, manages the digest needed for writes, and collects telemetry that helps the service to monitor the performance of an application. For communicating with non-SharePoint services, you can use the [`HttpClient`](https://dev.office.com/sharepoint/reference/spfx/sp-http/httpclient) utility class instead.
+SharePoint Framework includes a [`SPHttpClient`](https://docs.microsoft.com/javascript/api/sp-http/sphttpclient) utility class that you can use to interact with SharePoint data using SharePoint REST APIs. It adds default headers, manages the digest needed for writes, and collects telemetry that helps the service to monitor the performance of an application. For communicating with non-SharePoint services, you can use the [`HttpClient`](https://docs.microsoft.com/javascript/api/sp-http/httpclient) utility class instead.
 
 You can see this in action in the [SharePointDataProvider](./src/webparts/todo/dataProviders/SharePointDataProvider.ts). For example, here is what we do in the `createItem` method which creates a new todo item in the specific SharePoint list:
 
@@ -342,7 +369,45 @@ private _resolveBatch(batch: SPHttpClientBatch, promises: Promise<{}>[]): Promis
       .then(() => Promise.all(promises).then(values => values[values.length - 1]));
 }
 ```
+## Help
 
-<img src="https://telemetry.sharepointpnp.com/sp-dev-fx-webparts/samples/react-todo-basic" />
+<!--
+You can just search and replace this page with the following values:
+
+Search for:
+react-todo-basic
+
+Replace with your sample folder name. E.g.: react-my-cool-sample
+
+Search for:
+@chakkaradeep
+
+Replace with your GitHub username, prefixed with an "@". If you have more than one author, use %20 to separate them, making sure to prefix everyone's username individually with an "@".
+
+Example:
+@hugoabernier
+
+Or:
+@hugoabernier%20@VesaJuvonen%20@PopWarner
+-->
+
+We do not support samples, but this community is always willing to help, and we want to improve these samples. We use GitHub to track issues, which makes it easy for  community members to volunteer their time and help resolve issues.
+
+If you're having issues building the solution, please run [spfx doctor](https://pnp.github.io/cli-microsoft365/cmd/spfx/spfx-doctor/) from within the solution folder to diagnose incompatibility issues with your environment.
+
+You can try looking at [issues related to this sample](https://github.com/pnp/sp-dev-fx-webparts/issues?q=label%3A%22sample%3A%20react-todo-basic%22) to see if anybody else is having the same issues.
+
+You can also try looking at [discussions related to this sample](https://github.com/pnp/sp-dev-fx-webparts/discussions?discussions_q=react-todo-basic) and see what the community is saying.
+
+If you encounter any issues while using this sample, [create a new issue](https://github.com/pnp/sp-dev-fx-webparts/issues/new?assignees=&labels=Needs%3A+Triage+%3Amag%3A%2Ctype%3Abug-suspected%2Csample%3A%20react-todo-basic&template=bug-report.yml&sample=react-todo-basic&authors=@chakkaradeep&title=react-todo-basic%20-%20).
+
+For questions regarding this sample, [create a new question](https://github.com/pnp/sp-dev-fx-webparts/issues/new?assignees=&labels=Needs%3A+Triage+%3Amag%3A%2Ctype%3Aquestion%2Csample%3A%20react-todo-basic&template=question.yml&sample=react-todo-basic&authors=@chakkaradeep&title=react-todo-basic%20-%20).
+
+Finally, if you have an idea for improvement, [make a suggestion](https://github.com/pnp/sp-dev-fx-webparts/issues/new?assignees=&labels=Needs%3A+Triage+%3Amag%3A%2Ctype%3Aenhancement%2Csample%3A%20react-todo-basic&template=suggestion.yml&sample=react-todo-basic&authors=@chakkaradeep&title=react-todo-basic%20-%20).
 
 
+## Disclaimer
+
+**THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
+
+<img src="https://pnptelemetry.azurewebsites.net/sp-dev-fx-webparts/samples/react-todo-basic" />

@@ -1,3 +1,18 @@
+---
+page_type: sample
+products:
+- office-sp
+languages:
+- javascript
+- aspx
+- csharp
+- typescript
+extensions:
+  contentType: samples
+  technologies:
+  - SharePoint Framework
+  createdDate: 1/1/2016 12:00:00 AM
+---
 # Call custom Web API secured with AAD from SharePoint Framework client-side web part
 
 ## Summary
@@ -11,25 +26,18 @@ Sample SharePoint Framework client-side web part illustrating communication with
 
 ## Applies to
 
-* [SharePoint Framework Developer Preview](http://dev.office.com/sharepoint/docs/spfx/sharepoint-framework-overview)
-* [Office 365 developer tenant](http://dev.office.com/sharepoint/docs/spfx/set-up-your-developer-tenant)
+* [SharePoint Framework Developer Preview](https://learn.microsoft.com/sharepoint/dev/spfx/sharepoint-framework-overview)
+* [Office 365 developer tenant](https://learn.microsoft.com/sharepoint/dev/spfx/set-up-your-developer-tenant)
 
-## Solution
+## Contributors
 
-Solution|Author(s)
---------|---------
-react-aad-webapi|Waldek Mastykarz (MVP, Rencore, @waldekm)
+* [Waldek Mastykarz](https://github.com/waldekmastykarz)  (MVP, Rencore, @waldekm)
 
 ## Version history
 
 Version|Date|Comments
 -------|----|--------
 1.0|October 10, 2016|Initial release
-
-## Disclaimer
-**THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
-
----
 
 ## Minimal Path to Awesome
 
@@ -69,13 +77,13 @@ Version|Date|Comments
 
 ### Configure the web part
 
-- in the command line change the working directory to the **webpart** folder
+- in the command line change the working directory to the `webpart` folder
 - in the command line run `npm i`
-- in your code editor open the **webpart** folder
-- in the **./src/webparts/recentOrders/AdalConfig.ts** file
-  - replace the empty GUID in the **clientId** property with the application ID of the **Orders** application
-  - in the **endpoints** property, replace the URL of the API with the URL of your API App and the empty GUID with the application ID of the **Orders API** app.
-- in the **./src/webparts/recentOrders/components/RecentOrders.tsx** file
+- in your code editor open the `webpart` folder
+- in the `./src/webparts/recentOrders/AdalConfig.ts` file
+  - replace the empty GUID in the `clientId` property with the application ID of the **Orders** application
+  - in the `endpoints` property, replace the URL of the API with the URL of your API App and the empty GUID with the application ID of the **Orders API** app.
+- in the `./src/webparts/recentOrders/components/RecentOrders.tsx` file
   - in line 155 replace the empty GUID with the application ID of the **Orders API** application
   - in line 185 replace the URL with the URL of your API App
 - in the command line execute `gulp serve`
@@ -93,4 +101,25 @@ This web part illustrates the following concepts on top of the SharePoint Framew
 - communicating state updates in React components to users
 - executing REST API web requests from React components
 
-<img src="https://telemetry.sharepointpnp.com/sp-dev-fx-webparts/samples/react-aad-webapi" />
+## Help
+
+We do not support samples, but this community is always willing to help, and we want to improve these samples. We use GitHub to track issues, which makes it easy for  community members to volunteer their time and help resolve issues.
+
+If you're having issues building the solution, please run [spfx doctor](https://pnp.github.io/cli-microsoft365/cmd/spfx/spfx-doctor/) from within the solution folder to diagnose incompatibility issues with your environment.
+
+You can try looking at [issues related to this sample](https://github.com/pnp/sp-dev-fx-webparts/issues?q=label%3A%22sample%3A%20react-aad-webapi%22) to see if anybody else is having the same issues.
+
+You can also try looking at [discussions related to this sample](https://github.com/pnp/sp-dev-fx-webparts/discussions?discussions_q=react-aad-webapi) and see what the community is saying.
+
+If you encounter any issues while using this sample, [create a new issue](https://github.com/pnp/sp-dev-fx-webparts/issues/new?assignees=&labels=Needs%3A+Triage+%3Amag%3A%2Ctype%3Abug-suspected%2Csample%3A%20react-aad-webapi&template=bug-report.yml&sample=react-aad-webapi&authors=@waldekmastykarz&title=react-aad-webapi%20-%20).
+
+For questions regarding this sample, [create a new question](https://github.com/pnp/sp-dev-fx-webparts/issues/new?assignees=&labels=Needs%3A+Triage+%3Amag%3A%2Ctype%3Aquestion%2Csample%3A%20react-aad-webapi&template=question.yml&sample=react-aad-webapi&authors=@waldekmastykarz&title=react-aad-webapi%20-%20).
+
+Finally, if you have an idea for improvement, [make a suggestion](https://github.com/pnp/sp-dev-fx-webparts/issues/new?assignees=&labels=Needs%3A+Triage+%3Amag%3A%2Ctype%3Aenhancement%2Csample%3A%20react-aad-webapi&template=suggestion.yml&sample=react-aad-webapi&authors=@waldekmastykarz&title=react-aad-webapi%20-%20).
+
+
+## Disclaimer
+
+**THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
+
+<img src="https://pnptelemetry.azurewebsites.net/sp-dev-fx-webparts/samples/react-aad-webapi" />

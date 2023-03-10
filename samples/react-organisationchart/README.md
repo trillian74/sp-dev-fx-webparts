@@ -1,25 +1,56 @@
+---
+page_type: sample
+products:
+- office-sp
+languages:
+- javascript
+- typescript
+extensions:
+  contentType: samples
+  technologies:
+  - SharePoint Framework
+  platforms:
+  - React
+  createdDate: 1/1/2016 12:00:00 AM
+---
 # Organisation Chart
 
 ## Summary
-A simple Organisation Chart webpart using Office UI Fabric, React, REST API batching and ServiceScope plumbing. 
+A simple Organisation Chart web part using Office UI Fabric, React, REST API batching and ServiceScope plumbing. 
 
 ![Organisation Chart for the current user running in SharePoint](./assets/orgchart.png)
 
 ![Organisation Chart for the current user running in local Workbench](./assets/orgchart-mock.png)
 
-## Used SharePoint Framework Version 
-![drop](https://img.shields.io/badge/version-GA-green.svg)
+
+## Compatibility
+
+| :warning: Important          |
+|:---------------------------|
+| Every SPFx version is only compatible with specific version(s) of Node.js. In order to be able to build this sample, please ensure that the version of Node on your workstation matches one of the versions listed in this section. This sample will not work on a different version of Node.|
+|Refer to <https://aka.ms/spfx-matrix> for more information on SPFx compatibility.   |
+
+This sample is designed to be used in the following environments:
+
+![SPFx 1.0.0](https://img.shields.io/badge/SPFx-1.0.0-green.svg)
+![Node.js v6](https://img.shields.io/badge/Node.js-v6-green.svg) 
+![Compatible with SharePoint Online](https://img.shields.io/badge/SharePoint%20Online-Compatible-green.svg)
+![Compatible SharePoint 2019](https://img.shields.io/badge/SharePoint%20Server%202019-Compatible-green.svg)
+![Compatible with SharePoint 2016 (Feature Pack 2)](https://img.shields.io/badge/SharePoint%20Server%202016%20(Feature%20Pack%202)-Compatible-green.svg)
+![Local Workbench Compatible](https://img.shields.io/badge/Local%20Workbench-Compatible-green.svg)
+![Hosted Workbench Compatible](https://img.shields.io/badge/Hosted%20Workbench-Compatible-green.svg)
+![Compatible with Remote Containers](https://img.shields.io/badge/Remote%20Containers-Compatible-green.svg)
+
+For more information about SPFx compatibility, please refer to https://aka.ms/spfx-matrix
 
 ## Applies to
 
-* [SharePoint Framework](http://dev.office.com/sharepoint/docs/spfx/sharepoint-framework-overview)
+* [SharePoint Framework](https://learn.microsoft.com/sharepoint/dev/spfx/sharepoint-framework-overview)
 
 
-## Solution
+## Contributors
 
-Solution|Author(s)
---------|---------
-OrganisationChart | Vardhaman Deshpande ([@vrdmn](https://twitter.com/vrdmn) , [vrdmn.com](http://vrdmn.com))
+* Vardhaman Deshpande ([@vrdmn](https://twitter.com/vrdmn) , [vrdmn.com](http://vrdmn.com))
 
 ## Version history
 
@@ -29,10 +60,7 @@ Version|Date|Comments
 2.0|March 12, 2017|Updated for SPFx 1.0
 2.1|July 19, 2017|Use office-ui-fabric-react and uifabric/styling
 
-## Disclaimer
-**THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
 
----
 
 ## Minimal Path to Awesome
 
@@ -40,6 +68,8 @@ Version|Date|Comments
 - in the command line run:
   - `npm install`
   - `gulp serve`
+
+>  This sample can also be opened with [VS Code Remote Development](https://code.visualstudio.com/docs/remote/remote-overview). Visit https://aka.ms/spfx-devcontainer for further instructions.
 
 
 ## Features
@@ -55,4 +85,16 @@ This Web Part illustrates the following concepts on top of the SharePoint Framew
 - ServiceScope and ServiceKeys
 - Service Locator pattern to register and consume services
 
-<img src="https://telemetry.sharepointpnp.com/sp-dev-fx-webparts/samples/react-organisationchart" />
+
+## Disclaimer
+
+**THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
+
+
+## Disclaimer
+
+**THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
+
+
+
+<img src="https://pnptelemetry.azurewebsites.net/sp-dev-fx-webparts/samples/react-organisationchart" />

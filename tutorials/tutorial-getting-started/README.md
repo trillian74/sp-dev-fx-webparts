@@ -2,25 +2,25 @@
 
 ## Summary
 
-This sub folders contains client-side projects includes the web parts detailed in the Getting Started walkthroughs. Technically these web parts could have remaind in one single solution, but to ensure that they match exactly what's in the tutorials, we have seperated them to dedicated solutions. Sub folders contains the following web parts:
+This sub folder contains client-side projects includes the web parts detailed in the Getting Started walkthroughs. Technically these web parts could have remained in one single solution, but to ensure that they match exactly what's in the tutorials, we have separated them to dedicated solutions. Sub folders contains the following web parts:
 
 | Solution  | Getting Started Walkthrough | Video
 | ------------- | ------------- | ------------- |
-| hello-world  | [Build your first web part](http://dev.office.com/sharepoint/docs/spfx/web-parts/get-started/build-a-hello-world-web-part)   | [video](https://www.youtube.com/watch?v=QbDtsMg88Js)  |
-| hello-world-sp  | [Connect your client-side web part to SharePoint](http://dev.office.com/sharepoint/docs/spfx/web-parts/get-started/connect-to-sharepoint)  | [video](https://www.youtube.com/watch?v=9VMwjb2pbQ8)  |
-| jquery-webpart  | [Add jQueryUI Accordion to your SharePoint client-side web part](http://dev.office.com/sharepoint/docs/spfx/web-parts/get-started/add-jqueryui-accordion-to-web-part)  | [video](https://www.youtube.com/watch?v=-3m__hRQxEI)  |
-| documentcardexample-webpart  | [Use Office UI Fabric React components in your SharePoint client-side web part](http://dev.office.com/sharepoint/docs/spfx/web-parts/get-started/use-fabric-react-components)  | [video](https://www.youtube.com/watch?v=1N6kNvLxyg4)  |
-| asset-deployment-webpart  | [Provision SharePoint assets from SharePoint Framework solutions](https://dev.office.com/sharepoint/docs/spfx/web-parts/get-started/provision-sp-assets-from-package)  | TBD  |
+| hello-world  | [Build your first web part](https://docs.microsoft.com/sharepoint/dev/spfx/web-parts/get-started/build-a-hello-world-web-part)   | [video](https://www.youtube.com/watch?v=QbDtsMg88Js)  |
+| hello-world-sp  | [Connect your client-side web part to SharePoint](https://docs.microsoft.com/sharepoint/dev/spfx/web-parts/get-started/connect-to-sharepoint)  | [video](https://www.youtube.com/watch?v=9VMwjb2pbQ8)  |
+| jquery-webpart  | [Add jQueryUI Accordion to your SharePoint client-side web part](https://docs.microsoft.com/sharepoint/dev/spfx/web-parts/get-started/add-jqueryui-accordion-to-web-part)  | [video](https://www.youtube.com/watch?v=-3m__hRQxEI)  |
+| documentcardexample-webpart  | [Use Office UI Fabric React components in your SharePoint client-side web part](https://docs.microsoft.com/sharepoint/dev/spfx/web-parts/get-started/use-fabric-react-components)  | [video](https://www.youtube.com/watch?v=1N6kNvLxyg4)  |
+| asset-deployment-webpart  | [Provision SharePoint assets from SharePoint Framework solutions](https://docs.microsoft.com/sharepoint/dev/spfx/web-parts/get-started/provision-sp-assets-from-package)  | TBD  |
 
-You can also other SharePoint Framework releated videos from [SharePoint PnP YouTube Channel](https://aka.ms/SPPnP-Videos).
+You can also find other SharePoint Framework related videos from the [SharePoint PnP YouTube Channel](https://aka.ms/SPPnP-Videos).
 
 ## Used SharePoint Framework Version
-![GA](https://img.shields.io/badge/version-GA-green.svg)
+![GA](https://img.shields.io/badge/SPFx-GA-green.svg)
 
 ## Applies to
 
-* [SharePoint Framework Developer Preview](http://dev.office.com/sharepoint/docs/spfx/sharepoint-framework-overview)
-* [Office 365 developer tenant](http://dev.office.com/sharepoint/docs/spfx/set-up-your-developer-tenant)
+* [SharePoint Framework Developer Preview](https://learn.microsoft.com/sharepoint/dev/spfx/sharepoint-framework-overview)
+* [Microsoft 365 developer tenant](https://learn.microsoft.com/sharepoint/dev/spfx/set-up-your-developer-tenant)
 
 ## Solution
 
@@ -50,7 +50,7 @@ To build and run this client-side project, you will need to clone and build the 
 Clone this repo by executing the following command in your console:
 
 ```
-git clone https://github.com/SharePoint/sp-dev-fx-webparts.git
+git clone https://github.com/pnp/sp-dev-fx-webparts.git
 ```
 
 Navigate to the cloned repo folder which should be the same as the repo name:
@@ -78,11 +78,11 @@ Now run the following command to install the npm packages:
 npm install
 ```
 
-This will install the required npm packages and depedencies to build and run the client-side project.
+This will install the required npm packages and dependencies to build and run the client-side project.
 
 Once the npm packages are installed, run the command to preview your web parts in SharePoint Workbench:
 
 ```
 gulp serve
 ```
-<img src="https://telemetry.sharepointpnp.com/sp-dev-fx-webparts/tutorials" />
+<img src="https://pnptelemetry.azurewebsites.net/sp-dev-fx-webparts/tutorials" />

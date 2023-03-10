@@ -1,7 +1,9 @@
 declare interface IControlStrings {
-  BirdthayControlDefaultDay: string,
+  BirthdayControlDefaultDay: string,
   HappyBirthdayMsg: string,
   NextBirthdayMsg: string,
+  HappyAnniversaryMsg: string,
+  NextAnniversaryMsg: string,
   MessageNoBirthdays: string
 }
 

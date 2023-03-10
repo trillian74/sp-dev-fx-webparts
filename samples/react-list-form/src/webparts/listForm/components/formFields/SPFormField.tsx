@@ -2,6 +2,8 @@ import * as React from 'react';
 import { ControlMode } from '../../../../common/datatypes/ControlMode';
 import { IFieldSchema } from '../../../../common/services/datatypes/RenderListData';
 
+import { WebPartContext } from '@microsoft/sp-webpart-base';
+
 import FormField from './FormField';
 import { IFormFieldProps } from './FormField';
 import { IDatePickerStrings } from 'office-ui-fabric-react/lib/DatePicker';
@@ -20,6 +22,10 @@ import SPFieldRichTextDisplay from './SPFieldRichTextDisplay';
 import SPFieldLookupDisplay from './SPFieldLookupDisplay';
 import SPFieldUserDisplay from './SPFieldUserDisplay';
 import SPFieldUrlDisplay from './SPFieldUrlDisplay';
+import SPFieldUserEdit from './SPFieldUserEdit';
+import SPFieldTaxonomyEdit from './SPFieldTaxonomyEdit';
+
+import SPAttachmentFormFieldEdit from './SPAttachmentFormFieldEdit';
 
 import * as strings from 'FormFieldStrings';
 import styles from './SPFormField.module.scss';
@@ -37,13 +43,14 @@ const EditFieldTypeMappings: { [fieldType: string]: React.StatelessComponent<ISP
   DateTime: SPFieldDateEdit,
   Boolean: SPFieldBooleanEdit,
   File: SPFieldTextEdit,
+  Attachments: SPAttachmentFormFieldEdit,
+  User: SPFieldUserEdit,
+  UserMulti: SPFieldUserEdit,
+  TaxonomyFieldType: SPFieldTaxonomyEdit,
+  TaxonomyFieldTypeMulti: SPFieldTaxonomyEdit,
   /* The following are known but unsupported types as of now:
-  User: null,
-  UserMulti: null,
   URL: null,
-  TaxonomyFieldType: null,
   Attachments: null,
-  TaxonomyFieldTypeMulti: null,
   */
 };
 
@@ -79,6 +86,7 @@ export interface ISPFormFieldProps extends IFormFieldProps {
   extraData?: any;
   fieldSchema: IFieldSchema;
   hideIfFieldUnsupported?: boolean;
+  context: WebPartContext;
 }
 
 const SPFormField: React.SFC<ISPFormFieldProps> = (props) => {
@@ -91,7 +99,8 @@ const SPFormField: React.SFC<ISPFormFieldProps> = (props) => {
       const fieldMapping = richText ? DisplayFieldTypeMappings['RichText'] : DisplayFieldTypeMappings[fieldType];
       const childProps = fieldMapping.valuePreProcess ? { ...props, value: fieldMapping.valuePreProcess(props.value) } : props;
       fieldControl = React.createElement(fieldMapping.component, childProps);
-    } else if (!props.hideIfFieldUnsupported) {
+    }
+    else if (!props.hideIfFieldUnsupported) {
       const value = (props.value) ? ((typeof props.value === 'string') ? props.value : JSON.stringify(props.value)) : '';
       fieldControl = <div className={`ard-${fieldType}field-display`}>
         <span>{value}</span>

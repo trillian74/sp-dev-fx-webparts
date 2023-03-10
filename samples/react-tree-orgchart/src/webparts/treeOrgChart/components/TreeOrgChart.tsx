@@ -2,30 +2,53 @@
 // Author: João Mendes
 // Fev 2019
 //
-import * as React from 'react';
-import styles from './TreeOrgChart.module.scss';
-import { ITreeOrgChartProps } from './ITreeOrgChartProps';
-import { ITreeOrgChartState } from './ITreeOrgChartState';
-import { escape } from '@microsoft/sp-lodash-subset';
-import SortableTree from 'react-sortable-tree';
-import 'react-sortable-tree/style.css';
-import { IPersonaSharedProps, Persona, PersonaSize, PersonaPresence } from 'office-ui-fabric-react/lib/Persona';
-import { IconButton, IButtonProps } from 'office-ui-fabric-react/lib/Button';
+import * as React from "react";
+import styles from "./TreeOrgChart.module.scss";
+import { ITreeOrgChartProps } from "./ITreeOrgChartProps";
+import { ITreeOrgChartState } from "./ITreeOrgChartState";
+import SortableTree from "react-sortable-tree";
+import "react-sortable-tree/style.css";
+import {
+  IPersonaSharedProps,
+  Persona,
+  PersonaSize
+} from "office-ui-fabric-react/lib/Persona";
+import { IconButton } from "office-ui-fabric-react/lib/Button";
 import { WebPartTitle } from "@pnp/spfx-controls-react/lib/WebPartTitle";
-import spservice from '../../../services/spservices';
-import { ITreeChildren } from './ITreeChildren';
-import { ITreeData } from './ITreeData';
-import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/components/Spinner';
+import SPService from "../../../services/SPServices";
+import { ITreeData } from "./ITreeData";
+import {
+  Spinner,
+  SpinnerSize
+} from "office-ui-fabric-react/lib/components/Spinner";
+import { DisplayMode, Environment, EnvironmentType } from "@microsoft/sp-core-library";
+import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
+import { SPComponentLoader } from '@microsoft/sp-loader';
+import * as strings from 'TreeOrgChartWebPartStrings';
+import GraphServices, { IGraphUser } from "../../../services/GraphService";
+import GraphService from "../../../services/GraphService";
 
-export default class TreeOrgChart extends React.Component<ITreeOrgChartProps, ITreeOrgChartState> {
+
+export enum TreeOrgChartType {
+  MyTeam = 1,
+  CompanyHierarchy = 2,
+  ShowOtherTeam = 4
+}
+const LIVE_PERSONA_COMPONENT_ID: string = '914330ee-2df2-4f6e-a858-30c23a812408';
+
+export default class TreeOrgChart extends React.Component<
+  ITreeOrgChartProps,
+  ITreeOrgChartState
+  > {
   private treeData: ITreeData[];
-  private treeChildren: ITreeChildren[];
-  private SPService: spservice;
+  private SPService: SPService;
+  private GraphService: GraphService;
 
   constructor(props) {
     super(props);
 
-    this.SPService = new spservice(this.props.context);
+    this.SPService = new SPService(this.props.context);
+    this.GraphService = new GraphServices(this.props.context);
     this.state = {
       treeData: [],
       isLoading: true
@@ -36,40 +59,102 @@ export default class TreeOrgChart extends React.Component<ITreeOrgChartProps, IT
     this.setState({ treeData });
   }
 
-  public async componentDidUpdate(prevProps: ITreeOrgChartProps, prevState: ITreeOrgChartState) {
-    if (this.props.currentUserTeam !== prevProps.currentUserTeam || this.props.maxLevels !== prevProps.maxLevels) {
+  public async componentDidUpdate(
+    prevProps: ITreeOrgChartProps,
+    prevState: ITreeOrgChartState
+  ) {
+    if (
+      this.props.viewType !== prevProps.viewType ||
+      this.props.maxLevels !== prevProps.maxLevels ||
+      this.props.teamLeader !== prevProps.teamLeader ||
+      this.props.excludefilter !== prevProps.excludefilter ||
+      this.props.filter !== prevProps.filter ||
+      this.props.detailBehavoir !== prevProps.detailBehavoir
+    ) {
       await this.loadOrgchart();
     }
   }
 
   public async componentDidMount() {
+    if (Environment.type !== EnvironmentType.Local) {
+      const sharedLibrary = await this._loadSPComponentById(
+        LIVE_PERSONA_COMPONENT_ID
+      );
+      const livePersonaCard: any = sharedLibrary.LivePersonaCard;
+      this.setState({ livePersonaCard: livePersonaCard });
+    }
+
     await this.loadOrgchart();
   }
+
+  private async _loadSPComponentById(componentId: string): Promise<any> {
+    try {
+      const component: any = await SPComponentLoader.loadComponentById(
+        componentId
+      );
+      return component;
+    } catch (error) {
+      Promise.reject(error);
+    }
+  }
+
+  private livePersonaCard(user: IGraphUser): JSX.Element {
+    return React.createElement(
+      this.state.livePersonaCard,
+      {
+        serviceScope: this.props.context.serviceScope,
+        upn: user.userPrincipalName,
+        onCardOpen: () => {
+          console.log('LivePersonaCard Open');
+        },
+        onCardClose: () => {
+          console.log('LivePersonaCard Close');
+        },
+      }, this.buildDefaultPersonaCard(user)
+    );
+
+  }
+
   /*
   // Load Organization Chart
   */
   public async loadOrgchart() {
+
     this.setState({ treeData: [], isLoading: true });
-    const currentUser = `i:0#.f|membership|${this.props.context.pageContext.user.loginName}`;
-    const currentUserProperties = await this.SPService.getUserProperties(currentUser);
+    const currentUser = this.props.context.pageContext.user.loginName;
+    let currentUserProperties = null;
     this.treeData = [];
     // Test if show only my Team or All Organization Chart
-    if (!this.props.currentUserTeam) {
-      const treeManagers = await this.buildOrganizationChart(currentUserProperties);
-      treeManagers ?
-        this.treeData.push(treeManagers)
-        : null;
-    } else {
-      const treeManagers = await this.buildMyTeamOrganizationChart(currentUserProperties);
-      treeManagers ?
-        this.treeData.push({
-          title: (treeManagers.person),
-          expanded: true,
-          children: treeManagers.treeChildren
-        })
-        : null;
+    switch (this.props.viewType) {
+      case TreeOrgChartType.CompanyHierarchy:
+        const spcurrentlogin = `i:0#.f|membership|${currentUser}`;
+        currentUserProperties = await this.SPService.getUserProperties(
+          spcurrentlogin
+        );
+        const treeManagers = await this.buildOrganizationChart(
+          currentUserProperties
+        );
+        if (treeManagers) this.treeData.push(treeManagers);
+        break;
+      case TreeOrgChartType.MyTeam:
+        const myteam = await this.buildMyTeamOrganizationChart(
+          currentUser
+        );
+        if (myteam)
+          this.treeData = [{ ...myteam }];
+        break;
+      case TreeOrgChartType.ShowOtherTeam:
+        if (this.props.teamLeader && this.props.teamLeader.length > 0) {
+
+          const otherteam = await this.buildTeamLeaderOrganizationChart(
+            this.props.teamLeader
+          );
+          if (otherteam)
+            this.treeData = [{ ...otherteam }];
+        }
+        break;
     }
-    console.log(JSON.stringify(this.treeData));
+
     this.setState({ treeData: this.treeData, isLoading: false });
   }
 
@@ -79,166 +164,205 @@ export default class TreeOrgChart extends React.Component<ITreeOrgChartProps, IT
   */
   public async buildOrganizationChart(currentUserProperties: any) {
     // Get Managers
-    let treeManagers: ITreeData = null;
-    if (currentUserProperties.ExtendedManagers && currentUserProperties.ExtendedManagers.length > 0) {
-      treeManagers = await this.getUsers(currentUserProperties.ExtendedManagers[0]);
+    let treeManagers: ITreeData | null = null;
+    if (
+      currentUserProperties.ExtendedManagers &&
+      currentUserProperties.ExtendedManagers.length > 0
+    ) {
+      const upn: string | undefined = this.claimUserToUPN(currentUserProperties.ExtendedManagers[0]);
+      if (upn) {
+        treeManagers = await this.getUsers(
+          upn
+        );
+      }
+
     }
     return treeManagers;
   }
-  /*
-  // Get user from Top Manager
-  */
-  private async getUsers(manager: string) {
 
-    let person: any;
-    let spUser: IPersonaSharedProps = {};
-    // Get User Properties
-    const managerProperties = await this.SPService.getUserProperties(manager);
-    const imageInitials: string[] = managerProperties.DisplayName.split(' ');
-    // Persona Card Properties
-    spUser.imageUrl = `/_layouts/15/userphoto.aspx?size=L&username=${managerProperties.Email}`;
-    spUser.imageInitials = `${imageInitials[0].substring(0, 1).toUpperCase()}${imageInitials[1].substring(0, 1).toUpperCase()}`;
-    spUser.text = managerProperties.DisplayName;
-    spUser.tertiaryText = managerProperties.Email;
-    spUser.secondaryText = managerProperties.Title;
-    // PersonaCard component
-    person = <Persona {...spUser} hidePersonaDetails={false} size={PersonaSize.size40} />;
-    // Has DirectReports
-    if (managerProperties.DirectReports && managerProperties.DirectReports.length > 0) {
-      const usersDirectReports: any[] = await this.getChildren(managerProperties.DirectReports);
-      // return treeData
-      return { title: (person), expanded: true, children: usersDirectReports };
-      // Don't have DirectReports
+  private claimUserToUPN(claim: string): string | undefined {
+    if (!claim) { return undefined; }
+    const claimuser: string[] = claim.split('|');
+    if (claimuser.length > 1) {
+      const upn = claimuser[claimuser.length - 1];
+      if (upn && upn.length > 0 && upn.indexOf('@') !== -1) {
+        return upn;
+      }
+    }
+    return undefined;
+  }
+
+  public buildPersonaCard(user: IGraphUser): JSX.Element {
+    if (this.props.detailBehavoir) {
+      if (this.state.livePersonaCard) {
+        return (this.livePersonaCard(user));
+      }
+      return this.buildDefaultPersonaCard(user);
     } else {
-      // return treeData
-      return { title: (person) };
+      return this.buildDefaultPersonaCard(user);
     }
   }
-  // Get Children (user DirectReports)
-  private async getChildren(userDirectReports: any[]) {
 
-    let treeChildren: ITreeChildren[] = [];
+  public buildDefaultPersonaCard(user: IGraphUser): JSX.Element {
+
     let spUser: IPersonaSharedProps = {};
-
-    for (const user of userDirectReports) {
-      const managerProperties = await this.SPService.getUserProperties(user);
-      const imageInitials: string[] = managerProperties.DisplayName.split(' ');
-
-      spUser.imageUrl = `/_layouts/15/userphoto.aspx?size=L&username=${managerProperties.Email}`;
-      spUser.imageInitials = `${imageInitials[0].substring(0, 1).toUpperCase()}${imageInitials[1].substring(0, 1).toUpperCase()}`;
-      spUser.text = managerProperties.DisplayName;
-      spUser.tertiaryText = managerProperties.Email;
-      spUser.secondaryText = managerProperties.Title;
-      const person = <Persona {...spUser} hidePersonaDetails={false} size={PersonaSize.size40} />;
-      const usersDirectReports = await this.getChildren(managerProperties.DirectReports);
-
-      usersDirectReports ? treeChildren.push({ title: (person), children: usersDirectReports }) :
-        treeChildren.push({ title: (person) });
-    }
-    return treeChildren;
+    let imageInitials: string[] = user.displayName ? user.displayName.split(" ") : [];
+    //https://graph.microsoft.com/v1.0/users/${upn}/photo/$value
+    // Persona Card Properties
+    spUser.imageUrl = user.userPrincipalName ? `/_layouts/15/userphoto.aspx?size=L&username=${user.userPrincipalName}` : undefined;
+    spUser.imageInitials = imageInitials && imageInitials.length > 0 ? `${imageInitials[0]
+      .substring(0, 1)
+      .toUpperCase()}${imageInitials[1] ? imageInitials[1].substring(0, 1).toUpperCase() : ''}` : '';
+    spUser.text = user.displayName;
+    spUser.tertiaryText = user.mail;
+    spUser.secondaryText = user.jobTitle;
+    // PersonaCard component
+    return (
+      <Persona
+        {...spUser}
+        hidePersonaDetails={false}
+        size={PersonaSize.size40}
+      />
+    );
   }
 
+
+  private async getUsers(upn: string): Promise<ITreeData | null> {
+    const managerUser = await this.GraphService.getUser(upn);
+    const person = this.buildPersonaCard(managerUser);
+    if (managerUser.userPrincipalName) {
+      return ({
+        title: person,
+        expanded: true,
+        children: await this.getDirectReportsUsers(managerUser.userPrincipalName)
+      });
+    } else {
+      return { title: person };
+    }
+  }
+
+  private async getDirectReportsUsers(upn?: string, level: number = 1, expanded: boolean = false): Promise<ITreeData[] | null> {
+    if (!upn) { return null; }
+
+   
+    const directReportsUser = await this.GraphService.getUserDirectReports(upn,this.props.excludefilter,this.props.filter);
+    //this is already level 1
+    if (directReportsUser && directReportsUser.length > 0) {
+      return await Promise.all(directReportsUser.map(async (dr) => {
+        const children = ((level +1) <= this.props.maxLevels) ? await this.getDirectReportsUsers(dr.userPrincipalName, level + 1) : null;
+        return ({
+          title: this.buildPersonaCard(dr),
+          expanded: expanded,
+          children: children
+        });
+
+      }));
+    }
+    return null;
+  }
+
+
+
+  //buildTeamLeaderOrganizationChart
+  private async buildTeamLeaderOrganizationChart(upn: string): Promise<ITreeData | null> {
+
+    const tmpupn: string | undefined = this.claimUserToUPN(upn);
+
+    return await this.getUsers(tmpupn ? tmpupn : upn);
+
+  }
   /*
       Build My Team Organization Chart
       @parm: currentUserProperties
   */
-  private async buildMyTeamOrganizationChart(currentUserProperties: any) {
+  private async buildMyTeamOrganizationChart(upn: string): Promise<ITreeData | null> {
 
-    let manager: IPersonaSharedProps = {};
-    let me: IPersonaSharedProps = {};
-    let treeChildren: ITreeChildren[] = [];
-    let peer: IPersonaSharedProps = {};
-    let imageInitials: string[];
-    let hasManager:boolean = false;
-    let  managerCard: any;
-    // Get My Manager
-    const myManager = await this.SPService.getUserProfileProperty(currentUserProperties.AccountName, 'Manager');
-    // Get My Manager Properties
-    if (myManager){
-      const managerProperties = await this.SPService.getUserProperties(myManager);
-    imageInitials = managerProperties.DisplayName.split(' ');
-    // PersonaCard Props
-    manager.imageUrl = `/_layouts/15/userphoto.aspx?size=L&username=${managerProperties.Email}`;
-    manager.imageInitials = `${imageInitials[0].substring(0, 1).toUpperCase()}${imageInitials[1].substring(0, 1).toUpperCase()}`;
-    manager.text = managerProperties.DisplayName;
-    manager.tertiaryText = managerProperties.Email;
-    manager.secondaryText = managerProperties.Title;
-    // PersonaCard Component
-     managerCard = <Persona {...manager} hidePersonaDetails={false} size={PersonaSize.size40} />;
-      hasManager = true;
+    const mymanager = await this.GraphService.getUserManger(upn);
+    if (mymanager && mymanager.userPrincipalName) {
+      return await this.getUsers(mymanager.userPrincipalName);
     }
-
-    // Get my Properties
-    const meImageInitials: string[] = currentUserProperties.DisplayName.split(' ');
-    me.imageUrl = `/_layouts/15/userphoto.aspx?size=L&username=${currentUserProperties.Email}`;
-    me.imageInitials = `${meImageInitials[0].substring(0, 1).toUpperCase()}${meImageInitials[1].substring(0, 1).toUpperCase()}`;
-    me.text = currentUserProperties.DisplayName;
-    me.tertiaryText = currentUserProperties.Email;
-    me.secondaryText = currentUserProperties.Title;
-    const meCard = <Persona {...me} hidePersonaDetails={false} size={PersonaSize.size40} />;
-    const usersDirectReports: any[] = await this.getChildren(currentUserProperties.DirectReports);
-    // Current USer Has Manager
-    if (hasManager) {
-      treeChildren.push({ title: (meCard), expanded: true, children: usersDirectReports })
-
-    }else{
-        treeChildren = usersDirectReports;
-        managerCard = meCard;
-    }
-
-    // Get MyPeers
-    for (const userPeer of currentUserProperties.Peers) {
-      const peerProperties = await this.SPService.getUserProperties(userPeer);
-      imageInitials = peerProperties.DisplayName.split(' ');
-      peer.imageUrl = `/_layouts/15/userphoto.aspx?size=L&username=${peerProperties.Email}`;
-      peer.imageInitials = `${imageInitials[0].substring(0, 1).toUpperCase()}${imageInitials[1].substring(0, 1).toUpperCase()}`;
-      peer.text = peerProperties.DisplayName;
-      peer.tertiaryText = peerProperties.Email;
-      peer.secondaryText = peerProperties.Title;
-      const peerCard = <Persona {...peer} hidePersonaDetails={false} size={PersonaSize.size40} />;
-      treeChildren.push({ title: (peerCard) });
-    }
-    // Return
-    return { 'person': managerCard, 'treeChildren': treeChildren };
-
+    return await this.getUsers(upn);
   }
   // Render
   public render(): React.ReactElement<ITreeOrgChartProps> {
+    const showEditOther: boolean = this.props.displayMode === DisplayMode.Edit && this.props.viewType === TreeOrgChartType.ShowOtherTeam;
+    let selectedTeamleader: string | undefined = undefined;
+    if (showEditOther && this.props.teamLeader && this.props.teamLeader.length > 0) {
+      selectedTeamleader = this.claimUserToUPN(this.props.teamLeader);
+      if (!selectedTeamleader) {
+        selectedTeamleader = this.props.teamLeader;
+      }
+    }
+
     return (
       <div className={styles.treeOrgChart}>
-        <WebPartTitle displayMode={this.props.displayMode}
+        <WebPartTitle
+          displayMode={this.props.displayMode}
           title={this.props.title}
-          updateProperty={this.props.updateProperty} />
-        {
-          this.state.isLoading ? <Spinner size={SpinnerSize.large} label="Loading Organization Chart ..."></Spinner> : null
-        }
+          updateProperty={this.props.updateProperty}
+        />
+        {showEditOther && (<div>
+          <PeoplePicker
+            context={this.props.context}
+            titleText={strings.TeamLeaderHeadline}
+            personSelectionLimit={1}
+            groupName={""} // Leave this blank in case you want to filter from all users
+            isRequired={true}
+            disabled={false}
+            defaultSelectedUsers={selectedTeamleader ? [selectedTeamleader] : undefined}
+            selectedItems={(items: any) => {
+              if (this.props.updateTeamLeader) {
+                if (items.length > 0) {
+                  const teamleaderupn: string | undefined = this.claimUserToUPN(items[0].loginName);
+                  if (teamleaderupn) {
+                    this.props.updateTeamLeader(teamleaderupn);
+                    return;
+                  }
+                }
+                this.props.updateTeamLeader('');
+              }
+            }}
+            showHiddenInUI={false}
+            principalTypes={[PrincipalType.User]}
+            resolveDelay={1000} />
+        </div>)}
+
+        {this.state.isLoading ? (
+          <Spinner
+            size={SpinnerSize.large}
+            label="Loading Organization Chart ..."
+          ></Spinner>
+        ) : null}
         <div className={styles.treeContainer}>
           <SortableTree
             treeData={this.state.treeData}
             onChange={this.handleTreeOnChange.bind(this)}
             canDrag={false}
-            canDrop={false}
             rowHeight={70}
             maxDepth={this.props.maxLevels}
-            generateNodeProps={rowInfo => ({
-              buttons: [
-                <IconButton
-                  disabled={false}
-                  checked={false}
-                  iconProps={{ iconName: 'ContactInfo' }}
-                  title="Contact Info"
-                  ariaLabel="Contact"
-                  onClick={(ev) => {
-                    window.open(`https://eur.delve.office.com/?p=${rowInfo.node.title.props.tertiaryText}&v=work`);
-                  }}
-                />
-              ],
-            })}
+            generateNodeProps={rowInfo => {
+              return !this.props.detailBehavoir ?
+                ({
+                  buttons: [
+                    <IconButton
+                      disabled={false}
+                      checked={false}
+                      iconProps={{ iconName: "ContactInfo" }}
+                      title={strings.ContactInfoTitle}
+                      ariaLabel={strings.ContactInfoTitle}
+                      onClick={() => {
+                        window.open(
+                          `https://eur.delve.office.com/?p=${rowInfo.node.title.props.tertiaryText}&v=work`
+                        );
+                      }}
+                    />
+                  ]
+                }) : undefined;
+            }
+            }
           />
         </div>
       </div>
     );
   }
-
-
 }

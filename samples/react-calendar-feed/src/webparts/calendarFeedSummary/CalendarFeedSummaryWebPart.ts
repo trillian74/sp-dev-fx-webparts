@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import * as ReactDom from "react-dom";
 
@@ -34,8 +35,8 @@ import { ICalendarFeedSummaryWebPartProps } from "./CalendarFeedSummaryWebPart.t
 import CalendarFeedSummary from "./components/CalendarFeedSummary";
 import { ICalendarFeedSummaryProps } from "./components/CalendarFeedSummary.types";
 
-// this is the same width that the SharePoint events web parts use to render as narrow
-const MaxMobileWidth: number = 480;
+// Support for theme variants
+import { ThemeProvider, ThemeChangedEventArgs, IReadonlyTheme } from '@microsoft/sp-component-base';
 
 /**
  * Calendar Feed Summary Web Part
@@ -46,6 +47,8 @@ export default class CalendarFeedSummaryWebPart extends BaseClientSideWebPart<IC
   // the list of proviers available
   private _providerList: any[];
 
+  private _themeProvider: ThemeProvider;
+  private _themeVariant: IReadonlyTheme | undefined;
   constructor() {
     super();
 
@@ -54,7 +57,15 @@ export default class CalendarFeedSummaryWebPart extends BaseClientSideWebPart<IC
   }
 
   protected onInit(): Promise<void> {
-    return new Promise<void>((resolve, _reject) => {
+    return new Promise<void>((resolve) => {
+      // Consume the new ThemeProvider service
+      this._themeProvider = this.context.serviceScope.consume(ThemeProvider.serviceKey);
+
+      // If it exists, get the theme variant
+      this._themeVariant = this._themeProvider.tryGetTheme();
+
+      // Register a handler to be notified if the theme variant changes
+      this._themeProvider.themeChangedEvent.add(this, this._handleThemeChangedEvent);
 
       let {
         cacheDuration,
@@ -90,8 +101,8 @@ export default class CalendarFeedSummaryWebPart extends BaseClientSideWebPart<IC
    * Renders the web part
    */
   public render(): void {
-    // see if we need to render a mobile view
-    const isNarrow: boolean = this.domElement.clientWidth <= MaxMobileWidth;
+    // We pass the width so that the components can resize
+    const { clientWidth } = this.domElement;
 
     // display the summary (or the configuration screen)
     const element: React.ReactElement<ICalendarFeedSummaryProps> = React.createElement(
@@ -101,12 +112,13 @@ export default class CalendarFeedSummaryWebPart extends BaseClientSideWebPart<IC
         displayMode: this.displayMode,
         context: this.context,
         isConfigured: this._isConfigured(),
-        isNarrow: isNarrow,
         maxEvents: this.properties.maxEvents,
         provider: this._getDataProvider(),
+        themeVariant: this._themeVariant,
         updateProperty: (value: string) => {
           this.properties.title = value;
         },
+        clientWidth: clientWidth
       }
     );
 
@@ -259,6 +271,7 @@ export default class CalendarFeedSummaryWebPart extends BaseClientSideWebPart<IC
   /**
    * If we get resized, call the Render method so that we can switch between the narrow view and the regular view
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected onAfterResize(newWidth: number): void {
     // redraw the web part
     this.render();
@@ -313,7 +326,7 @@ export default class CalendarFeedSummaryWebPart extends BaseClientSideWebPart<IC
       return strings.FeedUrlValidationNoUrl;
     }
 
-    if (!feedUrl.match(/(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/)) {
+    if (!feedUrl.match(/(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-/]))?/)) {
       return strings.FeedUrlValidationInvalidFormat;
     }
 
@@ -334,7 +347,7 @@ export default class CalendarFeedSummaryWebPart extends BaseClientSideWebPart<IC
     } = this.properties;
 
     // get the first provider matching the type selected
-    let providerItem: any = this._providerList.filter(p => p.key === this.properties.feedType)[0];
+    const providerItem: any = this._providerList.filter(p => p.key === this.properties.feedType)[0];
 
     // make sure we got a valid provider
     if (!providerItem) {
@@ -343,7 +356,7 @@ export default class CalendarFeedSummaryWebPart extends BaseClientSideWebPart<IC
     }
 
     // get an instance
-    let provider: ICalendarService = providerItem.initialize();
+    const provider: ICalendarService = providerItem.initialize();
 
     // pass props
     provider.Context = this.context;
@@ -354,5 +367,15 @@ export default class CalendarFeedSummaryWebPart extends BaseClientSideWebPart<IC
     provider.ConvertFromUTC = convertFromUTC;
     provider.MaxTotal = maxTotal;
     return provider;
+  }
+
+  /**
+ * Update the current theme variant reference and re-render.
+ *
+ * @param args The new theme
+ */
+  private _handleThemeChangedEvent(args: ThemeChangedEventArgs): void {
+    this._themeVariant = args.theme;
+    this.render();
   }
 }

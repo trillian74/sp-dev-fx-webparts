@@ -1,4 +1,4 @@
-## React Chart Control Samples
+# Chart Control Samples
 
 ## Summary
 
@@ -8,7 +8,7 @@ This sample contains several web parts that demonstrate how to use the ChartCont
 
 The web parts in this sample are not intended to be used in production -- they simply demonstrate how you would use all the capabilities of the ChartControl.
 
-> **NOTE:** If you are looking for a ready-to-use web part, please look into [joelfmrodrigues' cool react-modern-charts sample](https://github.com/SharePoint/sp-dev-fx-webparts/tree/master/samples/react-modern-charts), which was built without the ChartControl.
+> **NOTE:** If you are looking for a ready-to-use web part, please look into [joelfmrodrigues' cool react-modern-charts sample](https://github.com/pnp/sp-dev-fx-webparts/tree/main/samples/react-modern-charts), which was built without the `ChartControl`.
 
 ## About the samples
 
@@ -16,7 +16,7 @@ We created the ChartControl by popular request of [@pnp/spfx-controls-react](htt
 
 To keep things as easy as possible, the ChartControl supports (most) of the Chart.js functionality (yes, even the use of plugins!).
 
-The samples in this solution mostly use code found from the Chart.js code samples -- with little or no conversion. Whereever possible, we localized strings, moved colors and styles to the web part's SCSS, and used Office Fabric UI components instead of regular buttons.
+The samples in this solution mostly use code found from the Chart.js code samples -- with little or no conversion. Wherever possible, we localized strings, moved colors and styles to the web part's SCSS, and used Office Fabric UI components instead of regular buttons.
 
 Each sample retrieves data and passes it to the ChartControl using one of the 3 methods:
 
@@ -168,44 +168,56 @@ This sample also demonstrates how to use time series for the X axis.
 
 This sample shows how to use X and Y coordinate data elements in a scatter chart.
 
-## Used SharePoint Framework Version
+## Compatibility
 
-![SPFx v1.7.1](https://img.shields.io/badge/SPFx-1.7.1-green.svg)
+| :warning: Important          |
+|:---------------------------|
+| Every SPFx version is only compatible with specific version(s) of Node.js. In order to be able to build this sample, please ensure that the version of Node on your workstation matches one of the versions listed in this section. This sample will not work on a different version of Node.|
+|Refer to <https://aka.ms/spfx-matrix> for more information on SPFx compatibility.   |
+
+![SPFx 1.11](https://img.shields.io/badge/SPFx-1.11.0-green.svg)
+![Node.js v10](https://img.shields.io/badge/Node.js-v10-green.svg)
+![Compatible with SharePoint Online](https://img.shields.io/badge/SharePoint%20Online-Compatible-green.svg)
+![Does not work with SharePoint 2019](https://img.shields.io/badge/SharePoint%20Server%202019-Incompatible-red.svg "SharePoint Server 2019 requires SPFx 1.4.1 or lower")
+![Does not work with SharePoint 2016 (Feature Pack 2)](https://img.shields.io/badge/SharePoint%20Server%202016%20(Feature%20Pack%202)-Incompatible-red.svg "SharePoint Server 2016 Feature Pack 2 requires SPFx 1.1")
+![Teams Incompatible](https://img.shields.io/badge/Teams-Incompatible-lightgrey.svg)
+![Local Workbench Incompatible](https://img.shields.io/badge/Local%20Workbench-Incompatible-red.svg "The solution requires access to SharePoint content")
+![Hosted Workbench Compatible](https://img.shields.io/badge/Hosted%20Workbench-Compatible-green.svg)
+![Compatible with Remote Containers](https://img.shields.io/badge/Remote%20Containers-Compatible-green.svg)
 
 ## Applies to
 
-* [SharePoint Framework](https:/dev.office.com/sharepoint)
-* [Office 365 tenant](https://dev.office.com/sharepoint/docs/spfx/set-up-your-development-environment)
+* [SharePoint Framework](https://learn.microsoft.com/sharepoint/dev/spfx/sharepoint-framework-overview)
+* [Microsoft 365 tenant](https://learn.microsoft.com/sharepoint/dev/spfx/set-up-your-development-environment)
 
 ## Prerequisites
 
 There are no pre-requisites to use these samples.
 
-## Solution
+## Contributors
 
-Solution|Author(s)
---------|---------
-react-chart-control | Hugo Bernier ([Tahoe Ninjas](http://tahoeninjas.blog), @bernierh)
+* Hugo Bernier ([Tahoe Ninja](http://tahoeninja.blog), [@bernierh](https://twitter.com/bernierh))
 
 ## Version history
 
 Version|Date|Comments
 -------|----|--------
 1.0|January, 2019|Initial release
-
-## Disclaimer
-
-**THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
-
----
+1.1|July 02, 2020|Upgraded to SPFx 1.10.0
+1.2|December 04, 2020|Upgraded to SPFx 1.11.0 and Fluent UI 7.x
+1.3|December 13, 2020|Upgraded dependencies
+1.4|February 25, 2021|Updated to latest version of PnP controls
 
 ## Minimal Path to Awesome
 
-* Clone this repository
+* Clone this repository (or [download this solution as a .ZIP file](https://pnp.github.io/download-partial/?url=https://github.com/pnp/sp-dev-fx-webparts/tree/main/samples/react-chartcontrol) then unzip it)
+* From your command line, change your current directory to the directory containing this sample (`react-chartcontrol`, located under `samples`)
 * in the command line run:
   * `npm install`
   * `gulp serve`
-* Insert the one of the webs part on a page
+* Insert one of the webs part on a page
+
+>  This sample can also be opened with [VS Code Remote Development](https://code.visualstudio.com/docs/remote/remote-overview). Visit https://aka.ms/spfx-devcontainer for further instructions.
 
 ## Features
 
@@ -221,4 +233,30 @@ This Web Part sample pack illustrates the following concepts on top of the Share
 * Rendering conditional property pane fields
 * Creating custom property pane controls
 
-<img src="https://telemetry.sharepointpnp.com/sp-dev-fx-webparts/samples/react-chartcontrol" />
+
+## Video
+
+[![Using reusable chart controls to present business data in a web part](./assets/video-thumbnail.jpg)](https://www.youtube.com/watch?v=U_rtVSyM6_I "Using reusable chart controls to present business data in a web part")
+
+## Help
+
+We do not support samples, but this community is always willing to help, and we want to improve these samples. We use GitHub to track issues, which makes it easy for  community members to volunteer their time and help resolve issues.
+
+If you're having issues building the solution, please run [spfx doctor](https://pnp.github.io/cli-microsoft365/cmd/spfx/spfx-doctor/) from within the solution folder to diagnose incompatibility issues with your environment.
+
+You can try looking at [issues related to this sample](https://github.com/pnp/sp-dev-fx-webparts/issues?q=label%3A%22sample%3A%20react-chartcontrol") to see if anybody else is having the same issues.
+
+You can also try looking at [discussions related to this sample](https://github.com/pnp/sp-dev-fx-webparts/discussions?discussions_q=react-chartcontrol) and see what the community is saying.
+
+If you encounter any issues while using this sample, [create a new issue](https://github.com/pnp/sp-dev-fx-webparts/issues/new?assignees=&labels=Needs%3A+Triage+%3Amag%3A%2Ctype%3Abug-suspected%2Csample%3A%20react-chartcontrol&template=bug-report.yml&sample=react-chartcontrol&authors=@hugoabernier&title=react-chartcontrol%20-%20).
+
+For questions regarding this sample, [create a new question](https://github.com/pnp/sp-dev-fx-webparts/issues/new?assignees=&labels=Needs%3A+Triage+%3Amag%3A%2Ctype%3Aquestion%2Csample%3A%20react-chartcontrol&template=question.yml&sample=react-chartcontrol&authors=@hugoabernier&title=react-chartcontrol%20-%20).
+
+Finally, if you have an idea for improvement, [make a suggestion](https://github.com/pnp/sp-dev-fx-webparts/issues/new?assignees=&labels=Needs%3A+Triage+%3Amag%3A%2Ctype%3Aenhancement%2Csample%3A%20react-chartcontrol&template=question.yml&sample=react-chartcontrol&authors=@hugoabernier&title=react-chartcontrol%20-%20).
+
+## Disclaimer
+
+**THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.**
+
+
+<img src="https://pnptelemetry.azurewebsites.net/sp-dev-fx-webparts/samples/react-chartcontrol" />

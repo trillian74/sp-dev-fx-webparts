@@ -1,14 +1,13 @@
 import * as React from 'react';
 import styles from './Birthdays.module.scss';
 import { IBirthdaysProps } from './IBirthdaysProps';
-import { escape } from '@microsoft/sp-lodash-subset';
 import { HappyBirthday, IUser } from '../../../controls/happybirthday';
 import * as moment from 'moment';
 import { IBirthdayState } from './IBirthdaysState';
 import SPService from '../../../services/SPService';
 import { WebPartTitle } from "@pnp/spfx-controls-react/lib/WebPartTitle";
 const imgBackgroundBallons: string = require('../../../../assets/ballonsBackgroud.png');
-import { Image, IImageProps, ImageFit } from 'office-ui-fabric-react/lib/Image';
+import { Image, ImageFit } from 'office-ui-fabric-react/lib/Image';
 import { Label } from 'office-ui-fabric-react/lib/Label';
 import * as strings from 'ControlStrings';
 
@@ -80,7 +79,7 @@ export default class Birthdays extends React.Component<IBirthdaysProps, IBirthda
       _otherMonthsBirthdays = [];
       _dezemberBirthdays = [];
       for (const item of listItems) {
-        this._users.push({ key: item.fields.email, userName: item.fields.Title, userEmail: item.fields.email, jobDescription: item.fields.JobTitle, birthday: moment.utc(item.fields.Birthday).local().format() });
+        this._users.push({ key: item.fields.email, userName: item.fields.Title, message: item.fields.message,anniversary: item.fields.anniversary, userEmail: item.fields.email, jobDescription: item.fields.JobTitle, birthday: moment.utc(item.fields.Birthday).local().format() });
       }
       // Sort Items by Birthday MSGraph List Items API don't support ODATA orderBy
       // for end of year teste and sorting

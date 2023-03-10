@@ -22,6 +22,15 @@ declare interface IFormFieldStrings {
   nextMonthAriaLabel?: string;
   prevYearAriaLabel?: string;
   nextYearAriaLabel?: string;
+
+  //Attachment
+  RemoveButtonLabel: string;
+  ReplaceButtonLabel: string;
+  AttachmentTermsConditionTitleText: string;
+  AttachmentTermsConditionText: string;
+
+  //Taxonomy
+  SelectTerm: string;
 }
 
 declare module 'FormFieldStrings' {
